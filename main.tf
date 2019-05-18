@@ -72,10 +72,6 @@ resource "digitalocean_firewall" "proxy" {
       port_range       = "53"
       source_addresses = ["${var.admin_ips}", "${var.user_ips}"]
     },
-    {
-      protocol         = "icmp"
-      source_addresses = ["0.0.0.0/0", "::/0"]
-    },
   ]
 
   outbound_rule = [
