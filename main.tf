@@ -54,22 +54,22 @@ resource "digitalocean_firewall" "proxy" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = [jsonencode(var.user_ips)]
+    source_addresses = [join(",", var.user_ips)]
   }
   inbound_rule {
     protocol         = "tcp"
     port_range       = "80"
-    source_addresses = [jsonencode(concat(var.admin_ips, var.user_ips))]
+    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
   }
   inbound_rule {
     protocol         = "tcp"
     port_range       = "443"
-    source_addresses = [jsonencode(concat(var.admin_ips, var.user_ips))]
+    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
   }
   inbound_rule {
     protocol         = "udp"
     port_range       = "53"
-    source_addresses = [jsonencode(concat(var.admin_ips, var.user_ips))]
+    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
   }
 
   outbound_rule {
