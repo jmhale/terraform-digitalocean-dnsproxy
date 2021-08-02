@@ -24,3 +24,9 @@ variable "droplet_size" {
   description = "Size of the droplet to create."
   default     = "s-1vcpu-1gb"
 }
+
+variable "dns_zone" {
+  type        = string
+  description = "Zone for DNS resolution"
+  default     = ""
+}

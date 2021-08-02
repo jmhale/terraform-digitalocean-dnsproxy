@@ -34,6 +34,22 @@ resource "digitalocean_floating_ip_assignment" "floating_ip_assignment_nyc3" {
   droplet_id = digitalocean_droplet.proxy_droplet_nyc3.id
 }
 
+resource "digitalocean_record" "nyc1" {
+  count  = var.dns_zone == "" ? 0 : 1
+  domain = var.dns_zone
+  type   = "A"
+  name   = "nyc1"
+  value  = digitalocean_floating_ip.floating_ip_nyc1.ip_address
+}
+
+resource "digitalocean_record" "nyc3" {
+  count  = var.dns_zone == "" ? 0 : 1
+  domain = var.dns_zone
+  type   = "A"
+  name   = "nyc3"
+  value  = digitalocean_floating_ip.floating_ip_nyc3.ip_address
+}
+
 data "template_file" "userdata" {
   template = file("${path.module}/userdata.tpl")
 
@@ -54,22 +70,22 @@ resource "digitalocean_firewall" "proxy" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = [join(",", var.user_ips)]
+    source_addresses = var.admin_ips
   }
   inbound_rule {
     protocol         = "tcp"
     port_range       = "80"
-    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
+    source_addresses = var.user_ips
   }
   inbound_rule {
     protocol         = "tcp"
     port_range       = "443"
-    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
+    source_addresses = var.user_ips
   }
   inbound_rule {
     protocol         = "udp"
     port_range       = "53"
-    source_addresses = [join(",", concat(var.admin_ips, var.user_ips))]
+    source_addresses = var.user_ips
   }
 
   outbound_rule {
